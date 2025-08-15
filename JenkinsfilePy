@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/drAdrian9/python-jenkins-app.git'
+                git branch: 'main', url: 'https://github.com/yourusername/python-jenkins-app.git'
             }
         }
 
@@ -12,19 +12,19 @@ pipeline {
             steps {
                 bat '''
                 python -m pip install --upgrade pip
-                python -m pip install -r requirement.txt
+                python -m pip install -r requirements.txt
                 '''
             }
         }
 
-        stage('Restart App') {
+        stage('Restart App with Logging') {
             steps {
                 bat '''
                 REM Kill any process using port 5000
                 for /f "tokens=5" %%a in ('netstat -ano ^| findstr :5000') do taskkill /PID %%a /F
 
-                REM Start the app in the background
-                start /B python app.py
+                REM Start the app in the background and log output
+                start /B cmd /c "python app.py > app.log 2>&1"
                 '''
             }
         }
