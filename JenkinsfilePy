@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/drAdrian9/python-jenkins-app.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                bat '''
+                python -m pip install --upgrade pip
+                python -m pip install -r requirement.txt
+                '''
+            }
+        }
+
+        stage('Restart App') {
+            steps {
+                bat '''
+                REM Kill any process using port 5000
+                for /f "tokens=5" %%a in ('netstat -ano ^| findstr :5000') do taskkill /PID %%a /F
+
+                REM Start the app in the background
+                start /B python app.py
+                '''
+            }
+        }
+    }
+}
