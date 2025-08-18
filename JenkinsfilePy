@@ -29,4 +29,33 @@ pipeline {
             }
         }
     }
+
+     post {
+        success {
+            emailext (
+                to: 'lahdalahjih@gmail.com',
+                subject: "✅ Jenkins Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                Good news! 🎉
+                Job: ${env.JOB_NAME}
+                Build Number: ${env.BUILD_NUMBER}
+                Status: SUCCESS
+                URL: ${env.BUILD_URL}
+                """
+            )
+        }
+        failure {
+            emailext (
+                to: 'lahdalahjih@gmail.com',
+                subject: "❌ Jenkins Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                Oops! Something went wrong 😢
+                Job: ${env.JOB_NAME}
+                Build Number: ${env.BUILD_NUMBER}
+                Status: FAILED
+                URL: ${env.BUILD_URL}
+                """
+            )
+        }
+    }
 }
